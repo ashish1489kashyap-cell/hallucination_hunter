@@ -1,16 +1,55 @@
 // app/history/[id].tsx — History Detail Screen (reproduces full report)
-import React from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
-import { router, useLocalSearchParams } from 'expo-router';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { router, useLocalSearchParams, Redirect } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { storage } from '../../services/storage';
 import { VerificationResult, Claim } from '../../types';
 import { TrustScoreGauge } from '../../components/TrustScoreGauge';
 import { ClaimCard } from '../../components/ClaimCard';
 import { Colors, Typography, Spacing, BorderRadius } from '../../constants/theme';
 
 export default function HistoryDetailScreen() {
-  const { data } = useLocalSearchParams<{ data: string }>();
-  const result: VerificationResult | null = data ? JSON.parse(data) : null;
+  const { id, data } = useLocalSearchParams<{ id?: string; data?: string }>();
+
+  // If URL is /history/index, safely redirect to the actual history route /history
+  if (id === 'index') {
+    return <Redirect href="/history" />;
+  }
+
+  const [result, setResult] = useState<VerificationResult | null>(() => {
+    if (data) {
+      try {
+        return JSON.parse(data);
+      } catch {
+        return null;
+      }
+    }
+    return null;
+  });
+  const [loading, setLoading] = useState(!result && Boolean(id));
+
+  useEffect(() => {
+    if (!result && id && id !== 'index') {
+      storage.getHistory().then((history) => {
+        const found = history.find((h) => h.verification_id === id);
+        if (found) {
+          setResult(found);
+        }
+        setLoading(false);
+      });
+    }
+  }, [id, result]);
+
+  if (loading) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={styles.center}>
+          <ActivityIndicator size="large" color={Colors.primary} />
+        </View>
+      </SafeAreaView>
+    );
+  }
 
   if (!result) {
     return (

@@ -1,8 +1,8 @@
 // app/(tabs)/index.tsx — Home Dashboard
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import {
   View, Text, StyleSheet, ScrollView, TouchableOpacity,
-  RefreshControl, Animated,
+  RefreshControl, Animated, Platform,
 } from 'react-native';
 import { router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -11,24 +11,26 @@ import { VerificationResult } from '../../types';
 import { Colors, Typography, Spacing, BorderRadius, Shadows, TRUST_SCORE_CONFIG } from '../../constants/theme';
 
 const ACTION_CARDS = [
-  { icon: '📝', label: 'Verify Text', desc: 'Paste AI response', route: '/verify/index', primary: true },
-  { icon: '📤', label: 'Share to Verify', desc: 'Share from any app', route: '/verify/index', primary: false },
+  { icon: '📝', label: 'Verify Text', desc: 'Paste AI response', route: '/verify', primary: true },
+  { icon: '📤', label: 'Share to Verify', desc: 'Share from any app', route: '/verify', primary: false },
   { icon: '📸', label: 'Scan Screenshot', desc: 'OCR verification', route: '/screenshot', primary: false },
-  { icon: '📄', label: 'Upload Document', desc: 'PDF / DOCX / TXT', route: '/verify/index', primary: false },
+  { icon: '📄', label: 'Upload Document', desc: 'PDF / DOCX / TXT', route: '/verify', primary: false },
 ];
 
 export default function HomeScreen() {
   const [history, setHistory] = useState<VerificationResult[]>([]);
   const [refreshing, setRefreshing] = useState(false);
-  const fadeAnim = new Animated.Value(0);
-  const slideAnim = new Animated.Value(20);
+  const fadeAnim = useRef(new Animated.Value(Platform.OS === 'web' ? 1 : 0)).current;
+  const slideAnim = useRef(new Animated.Value(Platform.OS === 'web' ? 0 : 20)).current;
 
   useEffect(() => {
     loadHistory();
-    Animated.parallel([
-      Animated.timing(fadeAnim, { toValue: 1, duration: 600, useNativeDriver: true }),
-      Animated.timing(slideAnim, { toValue: 0, duration: 500, useNativeDriver: true }),
-    ]).start();
+    if (Platform.OS !== 'web') {
+      Animated.parallel([
+        Animated.timing(fadeAnim, { toValue: 1, duration: 600, useNativeDriver: true }),
+        Animated.timing(slideAnim, { toValue: 0, duration: 500, useNativeDriver: true }),
+      ]).start();
+    }
   }, []);
 
   const loadHistory = async () => {
@@ -52,6 +54,7 @@ export default function HomeScreen() {
     <SafeAreaView style={styles.container}>
       <ScrollView
         showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ flexGrow: 1 }}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={Colors.primary} />}
       >
         <Animated.View style={{ opacity: fadeAnim, transform: [{ translateY: slideAnim }] }}>
@@ -76,7 +79,7 @@ export default function HomeScreen() {
           {/* Primary Action */}
           <TouchableOpacity
             style={styles.primaryAction}
-            onPress={() => router.push('/verify/index')}
+            onPress={() => router.push('/verify')}
             activeOpacity={0.85}
           >
             <View style={styles.primaryActionIcon}>
@@ -109,7 +112,7 @@ export default function HomeScreen() {
           {/* Demo button */}
           <TouchableOpacity
             style={styles.demoBtn}
-            onPress={() => router.push({ pathname: '/verify/index', params: { demo: '1' } })}
+            onPress={() => router.push({ pathname: '/verify', params: { demo: '1' } })}
           >
             <Text style={styles.demoBtnText}>✨ Try Demo Verification</Text>
           </TouchableOpacity>
@@ -119,7 +122,7 @@ export default function HomeScreen() {
             <>
               <View style={styles.sectionHeader}>
                 <Text style={styles.sectionTitle}>Recent</Text>
-                <TouchableOpacity onPress={() => router.push('/history/index')}>
+                <TouchableOpacity onPress={() => router.push('/history')}>
                   <Text style={styles.seeAll}>See all →</Text>
                 </TouchableOpacity>
               </View>
@@ -127,7 +130,7 @@ export default function HomeScreen() {
                 <RecentItem
                   key={item.verification_id}
                   item={item}
-                  onPress={() => router.push({ pathname: '/history/[id]', params: { id: item.verification_id } })}
+                  onPress={() => router.push({ pathname: '/history/[id]', params: { id: item.verification_id, data: JSON.stringify(item) } })}
                 />
               ))}
             </>

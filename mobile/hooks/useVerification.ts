@@ -124,12 +124,11 @@ function handleProgressEvent(
       break;
 
     case 'trust_score_updated':
-      setProgress((prev: AnalysisProgress) => ({
-        ...prev,
+      setProgress({
         stage: 'calculating_trust',
         label: 'Calculating Trust Score...',
         trustScore: data.trust_score as number,
-      }));
+      });
       break;
 
     case 'complete':

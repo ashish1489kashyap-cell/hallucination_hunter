@@ -20,7 +20,7 @@ from app.schemas.schemas import (
     VerifyRequest, VerificationResponse, ExtractClaimsRequest,
     ExtractClaimsResponse, AgentVerifyRequest, AgentVerifyResponse,
     VerificationStatus, ClaimResponse, SourceResponse, EvidenceResponse,
-    HistoryListResponse, VerifiedAnswerResponse,
+    HistoryListResponse, VerifiedAnswerRequest, VerifiedAnswerResponse,
 )
 from app.services.verification_service import verification_service
 

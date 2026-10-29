@@ -44,6 +44,7 @@ export default function RootLayout() {
         }}
       >
         <Stack.Screen name="index" options={{ headerShown: false }} />
+        <Stack.Screen name="home" options={{ headerShown: false }} />
         <Stack.Screen name="onboarding" options={{ headerShown: false }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen
@@ -81,6 +82,38 @@ export default function RootLayout() {
         <Stack.Screen
           name="privacy"
           options={{ title: 'Privacy & Data' }}
+        />
+        <Stack.Screen
+          name="portal/auth"
+          options={{ title: 'Portal Login & Registration', headerShown: false }}
+        />
+        <Stack.Screen
+          name="portal/trader/index"
+          options={{ title: 'Trader Dashboard', headerShown: false }}
+        />
+        <Stack.Screen
+          name="portal/trader/register-instrument"
+          options={{ title: 'Register Instrument', headerShown: false }}
+        />
+        <Stack.Screen
+          name="portal/trader/apply-verification"
+          options={{ title: 'Apply for Verification', headerShown: false }}
+        />
+        <Stack.Screen
+          name="portal/trader/applications"
+          options={{ title: 'Application Tracking', headerShown: false }}
+        />
+        <Stack.Screen
+          name="portal/admin/index"
+          options={{ title: 'Admin & Inspector Portal', headerShown: false }}
+        />
+        <Stack.Screen
+          name="portal/verify-certificate"
+          options={{ title: 'Certificate Verification', headerShown: false }}
+        />
+        <Stack.Screen
+          name="portal/ai-assistant"
+          options={{ title: 'Legal Metrology AI Assistant', headerShown: false }}
         />
       </Stack>
     </View>

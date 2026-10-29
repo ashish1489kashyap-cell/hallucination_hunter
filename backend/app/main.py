@@ -17,6 +17,7 @@ from app.api.v1.verify import router as verify_router
 from app.api.v1.health import router as health_router
 from app.api.v1.keys import router as keys_router
 from app.api.v1.metrics import router as metrics_router
+from app.api.v1.portal import router as portal_router
 
 logger = structlog.get_logger()
 
@@ -100,6 +101,7 @@ app.include_router(verify_router, prefix="/api/v1", tags=["Verification"])
 app.include_router(keys_router, prefix="/api/v1", tags=["API Keys"])
 app.include_router(metrics_router, prefix="/api/v1", tags=["Metrics"])
 app.include_router(health_router, prefix="/api/v1", tags=["Health & Upload"])
+app.include_router(portal_router, prefix="/api/v1/portal", tags=["Instrument Verification Portal"])
 
 
 # ── Global error handlers (consistent {"detail", "code"} shape) ──

@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "Hallucination Hunter",
-    "slug": "hallucination-hunter",
+    "name": "VerifyIt",
+    "slug": "verifyit",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "scheme": "hallucinationhunter",
+    "scheme": "verifyit",
     "userInterfaceStyle": "dark",
     "splash": {
       "image": "./assets/splash.png",
@@ -37,8 +37,8 @@
       [
         "expo-image-picker",
         {
-          "photosPermission": "Hallucination Hunter needs access to your photos to verify screenshots of AI responses.",
-          "cameraPermission": "Hallucination Hunter needs camera access to capture screenshots of AI responses."
+          "photosPermission": "VerifyIt needs access to your photos to verify screenshots of AI responses.",
+          "cameraPermission": "VerifyIt needs camera access to capture screenshots of AI responses."
         }
       ],
       "expo-sharing"

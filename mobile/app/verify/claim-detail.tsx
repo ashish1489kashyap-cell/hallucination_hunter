@@ -130,6 +130,12 @@ export default function ClaimDetailScreen() {
                 </TouchableOpacity>
               </View>
             ))}
+            <TouchableOpacity
+              onPress={() => router.push({ pathname: '/verify/evidence', params: { claim: JSON.stringify(claim) } })}
+              style={[styles.openSourceBtn, { marginTop: Spacing.sm, borderColor: Colors.accent }]}
+            >
+              <Text style={[styles.openSourceText, { color: Colors.accent }]}>View All in Evidence Explorer →</Text>
+            </TouchableOpacity>
           </Section>
         )}
 

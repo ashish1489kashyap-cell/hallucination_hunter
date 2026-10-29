@@ -61,11 +61,33 @@ export default function HomeScreen() {
           {/* Header */}
           <View style={styles.header}>
             <View>
-              <Text style={styles.greeting}>Hallucination</Text>
-              <Text style={styles.appName}>Hunter 🎯</Text>
+              <Text style={styles.greeting}>Welcome to</Text>
+              <Text style={styles.appName}>VerifyIt ⚖️</Text>
             </View>
-            <View style={styles.statusDot} />
+            <TouchableOpacity
+              style={styles.portalPill}
+              onPress={() => router.push('/home')}
+              activeOpacity={0.8}
+            >
+              <Text style={styles.portalPillText}>Full Portal →</Text>
+            </TouchableOpacity>
           </View>
+
+          {/* Portal Quick Access Banner */}
+          <TouchableOpacity
+            style={styles.portalBanner}
+            onPress={() => router.push('/home')}
+            activeOpacity={0.85}
+          >
+            <View style={styles.portalBannerIcon}>
+              <Text style={{ fontSize: 28 }}>⚖️</Text>
+            </View>
+            <View style={styles.portalBannerContent}>
+              <Text style={styles.portalBannerTitle}>Instrument Verification Portal</Text>
+              <Text style={styles.portalBannerSubtitle}>Trader, Admin, Certificates & Legal Metrology AI</Text>
+            </View>
+            <Text style={styles.portalBannerArrow}>→</Text>
+          </TouchableOpacity>
 
           {/* Stats Row */}
           {history.length > 0 && (
@@ -140,7 +162,7 @@ export default function HomeScreen() {
             <View style={styles.emptyState}>
               <Text style={styles.emptyIcon}>🎯</Text>
               <Text style={styles.emptyTitle}>No verifications yet</Text>
-              <Text style={styles.emptyDesc}>Paste an AI response above to get started.</Text>
+              <Text style={styles.emptyDesc}>Paste an AI response above or explore the Portal to get started.</Text>
             </View>
           )}
 
@@ -164,23 +186,24 @@ function StatCard({ label, value, unit, color }: { label: string; value: string;
 }
 
 function RecentItem({ item, onPress }: { item: VerificationResult; onPress: () => void }) {
-  const score = item.trust_score;
-  const scoreConfig = score !== undefined ? TRUST_SCORE_CONFIG(score) : null;
-  const date = new Date(item.created_at).toLocaleDateString();
+  const config = TRUST_SCORE_CONFIG(item.trust_score ?? 0);
+  const date = new Date(item.created_at).toLocaleDateString(undefined, {
+    month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit',
+  });
 
   return (
-    <TouchableOpacity style={styles.recentItem} onPress={onPress}>
+    <TouchableOpacity style={styles.recentItem} onPress={onPress} activeOpacity={0.75}>
       <View style={styles.recentLeft}>
         <Text style={styles.recentDate}>{date}</Text>
         <Text style={styles.recentClaims}>
-          {item.total_claims} claims · {item.false} false · {item.unverifiable} unverifiable
+          {item.total_claims} claims · {item.verified} verified · {item.false} false
         </Text>
       </View>
-      {score !== undefined && scoreConfig && (
-        <View style={[styles.recentScore, { borderColor: `${scoreConfig.color}40` }]}>
-          <Text style={[styles.recentScoreText, { color: scoreConfig.color }]}>{score}</Text>
-        </View>
-      )}
+      <View style={[styles.recentScore, { borderColor: config.color, backgroundColor: config.bg }]}>
+        <Text style={[styles.recentScoreText, { color: config.color }]}>
+          {item.trust_score ?? 0}
+        </Text>
+      </View>
     </TouchableOpacity>
   );
 }
@@ -197,7 +220,43 @@ const styles = StyleSheet.create({
   },
   greeting: { color: Colors.textSecondary, fontSize: Typography.fontSize.base, fontFamily: 'Inter_400Regular' },
   appName: { color: Colors.textPrimary, fontSize: Typography.fontSize['2xl'], fontFamily: 'Inter_700Bold', letterSpacing: -0.5 },
-  statusDot: { width: 8, height: 8, borderRadius: 4, backgroundColor: Colors.accentGreen },
+  portalPill: {
+    backgroundColor: `${Colors.primary}25`,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: `${Colors.primary}50`,
+  },
+  portalPillText: {
+    color: Colors.primary,
+    fontSize: 12,
+    fontFamily: 'Inter_600SemiBold',
+  },
+  portalBanner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginHorizontal: Spacing.xl,
+    marginBottom: Spacing.base,
+    backgroundColor: 'rgba(108, 99, 255, 0.12)',
+    borderRadius: BorderRadius.lg,
+    padding: Spacing.md,
+    borderWidth: 1.5,
+    borderColor: 'rgba(108, 99, 255, 0.4)',
+    gap: Spacing.md,
+  },
+  portalBannerIcon: {
+    width: 46,
+    height: 46,
+    borderRadius: 14,
+    backgroundColor: 'rgba(108, 99, 255, 0.25)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  portalBannerContent: { flex: 1 },
+  portalBannerTitle: { color: Colors.textPrimary, fontSize: Typography.fontSize.sm, fontFamily: 'Inter_700Bold' },
+  portalBannerSubtitle: { color: Colors.textSecondary, fontSize: 11, fontFamily: 'Inter_400Regular', marginTop: 2 },
+  portalBannerArrow: { color: Colors.primary, fontSize: Typography.fontSize.lg, fontFamily: 'Inter_700Bold' },
   statsRow: {
     flexDirection: 'row',
     marginHorizontal: Spacing.xl,

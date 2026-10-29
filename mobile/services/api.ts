@@ -2,10 +2,18 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { VerifyRequest, VerificationResult, HistoryItem, ProgressEvent } from '../types';
 
-// Change this to your backend URL
-const BASE_URL = __DEV__
-  ? 'http://10.0.2.2:8000'   // Android emulator → localhost
-  : 'https://your-production-api.com';
+// Configurable backend URL with web and EXPO_PUBLIC_API_URL support
+const getBaseUrl = () => {
+  if (process.env.EXPO_PUBLIC_API_URL) {
+    return process.env.EXPO_PUBLIC_API_URL;
+  }
+  if (typeof window !== 'undefined' && window.location) {
+    return 'http://localhost:8000';
+  }
+  return __DEV__ ? 'http://10.0.2.2:8000' : 'https://your-production-api.com';
+};
+
+const BASE_URL = getBaseUrl();
 
 const API_BASE = `${BASE_URL}/api/v1`;
 

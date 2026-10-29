@@ -1,6 +1,6 @@
 // components/ProgressStages.tsx — Live analysis progress UI
 import React, { useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, Animated } from 'react-native';
+import { View, Text, StyleSheet, Animated, Platform } from 'react-native';
 import { AnalysisProgress, AnalysisStage } from '../types';
 import { Colors, Typography, Spacing, BorderRadius } from '../constants/theme';
 
@@ -31,8 +31,8 @@ export const ProgressStages: React.FC<ProgressStagesProps> = ({ progress }) => {
   useEffect(() => {
     const pulse = Animated.loop(
       Animated.sequence([
-        Animated.timing(pulseAnim, { toValue: 1.2, duration: 600, useNativeDriver: true }),
-        Animated.timing(pulseAnim, { toValue: 1, duration: 600, useNativeDriver: true }),
+        Animated.timing(pulseAnim, { toValue: 1.2, duration: 600, useNativeDriver: Platform.OS !== 'web' }),
+        Animated.timing(pulseAnim, { toValue: 1, duration: 600, useNativeDriver: Platform.OS !== 'web' }),
       ])
     );
     pulse.start();

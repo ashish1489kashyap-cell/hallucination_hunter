@@ -1,7 +1,7 @@
 // components/ClaimCard.tsx
 import React, { useState } from 'react';
 import {
-  View, Text, StyleSheet, TouchableOpacity, Animated,
+  View, Text, StyleSheet, TouchableOpacity, Animated, Platform,
 } from 'react-native';
 import { Claim } from '../types';
 import { VerdictBadge } from './VerdictBadge';
@@ -21,10 +21,10 @@ export const ClaimCard: React.FC<ClaimCardProps> = ({ claim, onPress, onViewEvid
   const scaleAnim = new Animated.Value(1);
 
   const onPressIn = () => {
-    Animated.spring(scaleAnim, { toValue: 0.98, useNativeDriver: true, speed: 20 }).start();
+    Animated.spring(scaleAnim, { toValue: 0.98, useNativeDriver: Platform.OS !== 'web', speed: 20 }).start();
   };
   const onPressOut = () => {
-    Animated.spring(scaleAnim, { toValue: 1, useNativeDriver: true, speed: 20 }).start();
+    Animated.spring(scaleAnim, { toValue: 1, useNativeDriver: Platform.OS !== 'web', speed: 20 }).start();
   };
 
   const severityConfig = claim.severity ? SEVERITY_CONFIG[claim.severity] : null;

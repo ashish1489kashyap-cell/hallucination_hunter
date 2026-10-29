@@ -2,7 +2,7 @@
 import React, { useState, useRef } from 'react';
 import {
   View, Text, StyleSheet, FlatList, Dimensions,
-  TouchableOpacity, Animated,
+  TouchableOpacity, Animated, Platform,
 } from 'react-native';
 import { router } from 'expo-router';
 import { storage } from '../services/storage';
@@ -43,7 +43,7 @@ export default function OnboardingScreen() {
     dotScale.forEach((scale, i) => {
       Animated.spring(scale, {
         toValue: i === index ? 1.4 : 1,
-        useNativeDriver: true,
+        useNativeDriver: Platform.OS !== 'web',
         speed: 20,
       }).start();
     });

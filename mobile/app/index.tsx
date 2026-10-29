@@ -1,77 +1,67 @@
 // app/index.tsx — Splash screen with animated logo
 import React, { useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, Animated, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, Animated, Dimensions, Platform } from 'react-native';
 import { router } from 'expo-router';
-import { storage } from '../services/storage';
 import { Colors, Typography, Spacing } from '../constants/theme';
 
-const { width } = Dimensions.get('window');
-
 export default function SplashScreen() {
-  const logoScale = useRef(new Animated.Value(0.3)).current;
-  const logoOpacity = useRef(new Animated.Value(0)).current;
-  const titleOpacity = useRef(new Animated.Value(0)).current;
-  const subtitleOpacity = useRef(new Animated.Value(0)).current;
-  const glowOpacity = useRef(new Animated.Value(0)).current;
-  const ringScale = useRef(new Animated.Value(0.5)).current;
+  const isWeb = Platform.OS === 'web';
+  const logoScale = useRef(new Animated.Value(isWeb ? 1 : 0.3)).current;
+  const logoOpacity = useRef(new Animated.Value(isWeb ? 1 : 0)).current;
+  const titleOpacity = useRef(new Animated.Value(isWeb ? 1 : 0)).current;
+  const subtitleOpacity = useRef(new Animated.Value(isWeb ? 1 : 0)).current;
+  const glowOpacity = useRef(new Animated.Value(isWeb ? 1 : 0)).current;
+  const ringScale = useRef(new Animated.Value(isWeb ? 1 : 0.5)).current;
 
   useEffect(() => {
-    // Logo animation sequence
-    Animated.sequence([
-      // Ring expands
-      Animated.parallel([
-        Animated.spring(ringScale, {
+    if (!isWeb) {
+      Animated.sequence([
+        Animated.parallel([
+          Animated.spring(ringScale, {
+            toValue: 1,
+            tension: 40,
+            friction: 8,
+            useNativeDriver: true,
+          }),
+          Animated.timing(glowOpacity, {
+            toValue: 1,
+            duration: 600,
+            useNativeDriver: true,
+          }),
+        ]),
+        Animated.parallel([
+          Animated.spring(logoScale, {
+            toValue: 1,
+            tension: 60,
+            friction: 8,
+            useNativeDriver: true,
+          }),
+          Animated.timing(logoOpacity, {
+            toValue: 1,
+            duration: 400,
+            useNativeDriver: true,
+          }),
+        ]),
+        Animated.timing(titleOpacity, {
           toValue: 1,
-          tension: 40,
-          friction: 8,
+          duration: 500,
           useNativeDriver: true,
         }),
-        Animated.timing(glowOpacity, {
-          toValue: 1,
-          duration: 600,
-          useNativeDriver: true,
-        }),
-      ]),
-      // Logo appears
-      Animated.parallel([
-        Animated.spring(logoScale, {
-          toValue: 1,
-          tension: 60,
-          friction: 8,
-          useNativeDriver: true,
-        }),
-        Animated.timing(logoOpacity, {
+        Animated.timing(subtitleOpacity, {
           toValue: 1,
           duration: 400,
           useNativeDriver: true,
         }),
-      ]),
-      // Title appears
-      Animated.timing(titleOpacity, {
-        toValue: 1,
-        duration: 500,
-        useNativeDriver: true,
-      }),
-      // Subtitle appears
-      Animated.timing(subtitleOpacity, {
-        toValue: 1,
-        duration: 400,
-        useNativeDriver: true,
-      }),
-    ]).start();
+      ]).start();
+    }
 
-    // Navigate after animation
-    const timer = setTimeout(async () => {
-      const done = await storage.isOnboardingComplete();
-      if (done) {
-        router.replace('/(tabs)');
-      } else {
-        router.replace('/onboarding');
-      }
-    }, 2800);
+    // Seamless navigation to the main verified Home portal
+    const timer = setTimeout(() => {
+      router.replace('/home');
+    }, isWeb ? 800 : 1500);
 
     return () => clearTimeout(timer);
-  }, []);
+  }, [isWeb]);
 
   return (
     <View style={styles.container}>
@@ -87,18 +77,17 @@ export default function SplashScreen() {
         styles.logoContainer,
         { transform: [{ scale: logoScale }], opacity: logoOpacity }
       ]}>
-        <Text style={styles.logoIcon}>🎯</Text>
+        <Text style={styles.logoIcon}>⚖️</Text>
       </Animated.View>
 
       {/* Title */}
       <Animated.View style={[styles.titleContainer, { opacity: titleOpacity }]}>
-        <Text style={styles.title}>Hallucination</Text>
-        <Text style={styles.titleAccent}>Hunter</Text>
+        <Text style={styles.title}>Verify<Text style={styles.titleAccent}>It</Text></Text>
       </Animated.View>
 
       {/* Subtitle */}
       <Animated.Text style={[styles.subtitle, { opacity: subtitleOpacity }]}>
-        Verify AI. Trust Evidence.
+        Online Instrument Verification & AI Trust
       </Animated.Text>
 
       {/* Version */}

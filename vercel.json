@@ -1,0 +1,12 @@
+{
+  "buildCommand": "cd mobile && npx expo export -p web",
+  "outputDirectory": "mobile/dist",
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
